@@ -19,9 +19,12 @@ public class ChatScreenMixin {
 
     @Inject(at = @At("TAIL"), method = "onEdited")
     private void onEdited(String chatText, CallbackInfo ci) {
-        if (ComChatUtil.inComChat.get()) {
-            ComChatConfig config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
-            // text colors are ARGB since 1.21.x; the config stores RGB only
+        ComChatConfig config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
+        // text colors are ARGB since 1.21.x; the config stores RGB only
+        if (ComChatUtil.inStaffChat.get()) {
+            // staff chat wins on the server, so it wins here too
+            input.setTextColor(ARGB.opaque(config.staffColor));
+        } else if (ComChatUtil.inComChat.get()) {
             input.setTextColor(ARGB.opaque(config.color));
         } else {
             input.setTextColor(EditBox.DEFAULT_TEXT_COLOR);

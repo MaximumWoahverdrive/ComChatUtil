@@ -1,5 +1,7 @@
 {
   "text.autoconfig.comchatutil.option.color": "Communitychat Highlight Color",
+  "text.autoconfig.comchatutil.option.staffColor": "Staffchat Highlight Color",
+  "text.autoconfig.comchatutil.option.staffColor.@Tooltip": "Only used on servers that tell the mod when staff chat is on",
   "text.autoconfig.comchatutil.option.escapedPhrases": "Escaped Phrases",
   "text.autoconfig.comchatutil.option.escapedPhrases.@Tooltip": "Accepts Regex, will automatically add a | between entries",
   "text.autoconfig.comchatutil.option.togglePhrases": "Toggle Phrases",

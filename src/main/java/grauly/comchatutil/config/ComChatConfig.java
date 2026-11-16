@@ -11,6 +11,9 @@ import java.util.List;
 public class ComChatConfig implements ConfigData {
     @ConfigEntry.ColorPicker
     public int color = ComChatDefaultConfig.COLOR;
+    @ConfigEntry.ColorPicker
+    @ConfigEntry.Gui.Tooltip
+    public int staffColor = ComChatDefaultConfig.STAFF_COLOR;
     @ConfigEntry.Gui.Tooltip
     public List<String> togglePhrases = ComChatDefaultConfig.togglePhrases;
     @ConfigEntry.Gui.Tooltip
