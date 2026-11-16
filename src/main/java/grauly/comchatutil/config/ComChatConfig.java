@@ -21,6 +21,8 @@ public class ComChatConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public List<String> inlinePhrases = ComChatDefaultConfig.inlinePhrases;
     @ConfigEntry.Gui.Tooltip
+    public boolean aliasesEnabled = ComChatDefaultConfig.ALIASES_ENABLED;
+    @ConfigEntry.Gui.Tooltip
     public List<String> aliases = ComChatDefaultConfig.aliases;
     @ConfigEntry.Gui.Tooltip
     public int escapeDelayTicks = ComChatDefaultConfig.ESCAPEDELAYTICKS;

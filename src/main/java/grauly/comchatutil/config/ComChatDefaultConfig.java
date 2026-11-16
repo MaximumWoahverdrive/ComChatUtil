@@ -20,6 +20,8 @@ public class ComChatDefaultConfig {
     @ConfigEntry.Gui.Tooltip
     public static final List<String> inlinePhrases = List.of("gc", "groupchat");
     @ConfigEntry.Gui.Tooltip
+    public static final boolean ALIASES_ENABLED = true;
+    @ConfigEntry.Gui.Tooltip
     public static final List<String> aliases = List.of("cc", "gc", "groupchat", "communitychat");
     @ConfigEntry.Gui.Tooltip
     public static final int ESCAPEDELAYTICKS = 1;

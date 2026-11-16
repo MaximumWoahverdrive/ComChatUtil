@@ -28,14 +28,18 @@ public class ComChatEventListener {
 
     public static String applyAliases(String command) {
         var config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
+        if (!config.aliasesEnabled) {
+            return command;
+        }
         // toggle aliases
         if (config.aliases.contains(command)) {
             return config.getTogglePhrase();
         }
         // inline aliases
         for (String alias : config.aliases) {
-            if (command.startsWith(alias)) {
-                return command.replaceFirst(alias, config.getInlinePhrase());
+            // only a whole first word, so "gc" doesn't rewrite e.g. "gcsomething"
+            if (command.startsWith(alias + " ")) {
+                return config.getInlinePhrase() + command.substring(alias.length());
             }
         }
         return command;
