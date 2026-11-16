@@ -2,6 +2,7 @@ package grauly.comchatutil;
 
 import grauly.comchatutil.bridge.ChatStatePayload;
 import grauly.comchatutil.config.ComChatConfig;
+import grauly.comchatutil.config.ComChatDefaultConfig;
 import grauly.comchatutil.event.ComChatEventListener;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -10,9 +11,11 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ComChatUtil implements ClientModInitializer {
@@ -25,8 +28,21 @@ public class ComChatUtil implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        // checked before registering, which writes a default config if there is none
+        boolean hadConfig = Files.exists(FabricLoader.getInstance().getConfigDir().resolve("comchatutil.json"));
         AutoConfig.register(ComChatConfig.class, GsonConfigSerializer::new);
-        AutoConfig.getConfigHolder(ComChatConfig.class).registerSaveListener(ComChatEventListener::onConfigChange);
+        var configHolder = AutoConfig.getConfigHolder(ComChatConfig.class);
+        configHolder.registerSaveListener(ComChatEventListener::onConfigChange);
+        var config = configHolder.getConfig();
+        if (config.configVersion < ComChatDefaultConfig.CONFIG_VERSION) {
+            if (hadConfig && config.hasLegacyDefaults()) {
+                // the version is raised once the notice was shown, so quitting before joining doesn't lose it
+                ComChatEventListener.showUpgradeNotice = true;
+            } else {
+                config.configVersion = ComChatDefaultConfig.CONFIG_VERSION;
+                configHolder.save();
+            }
+        }
         ClientSendMessageEvents.MODIFY_COMMAND.register(ComChatEventListener::applyAliases);
         ClientSendMessageEvents.ALLOW_CHAT.register(ComChatEventListener::handleComChatEscaping);
         ClientSendMessageEvents.COMMAND.register(ComChatEventListener::handleComChatToggle);

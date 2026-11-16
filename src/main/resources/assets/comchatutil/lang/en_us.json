@@ -14,5 +14,6 @@
   "text.autoconfig.comchatutil.option.aliases.@Tooltip": "If you want to have shorter toggles, this is for you. Exact text match, Case sensitive, will replace this with the first of the toggle phrases",
   "text.autoconfig.comchatutil.option.escapeDelayTicks": "Escape Delay Ticks",
   "text.autoconfig.comchatutil.option.escapeDelayTicks.@Tooltip": "The Amount of time to wait between sending of commands when escaping phrases, in game ticks",
+  "text.comchatutil.upgrade.legacyDefaults": "[Com Chat Util] Your settings still use the old /gc defaults. The mod now defaults to /cc, as used on survivewith.us. To switch, reset the Toggle Phrases and Inline Phrases in the mod's settings (Mod Menu), or delete config/comchatutil.json.",
   "text.comchatutil.regex.error": "The Following Regex Expressions could not compile, and as such will not work:"
 }

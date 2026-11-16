@@ -9,6 +9,9 @@ import java.util.List;
 
 @Config(name = "comchatutil")
 public class ComChatConfig implements ConfigData {
+    /** 0 in configs written before this field existed, as Gson keeps the initializer for missing fields. */
+    @ConfigEntry.Gui.Excluded
+    public int configVersion = 0;
     @ConfigEntry.ColorPicker
     public int color = ComChatDefaultConfig.COLOR;
     @ConfigEntry.ColorPicker
@@ -39,6 +42,11 @@ public class ComChatConfig implements ConfigData {
             return inlinePhrases.get(0);
         ComChatUtil.LOGGER.warn("Could not load inline phrases, using internal defaults.");
         return ComChatDefaultConfig.inlinePhrases.get(0);
+    }
+
+    public boolean hasLegacyDefaults() {
+        return togglePhrases.equals(ComChatDefaultConfig.LEGACY_TOGGLE_PHRASES)
+                || inlinePhrases.equals(ComChatDefaultConfig.LEGACY_INLINE_PHRASES);
     }
 
     @Override

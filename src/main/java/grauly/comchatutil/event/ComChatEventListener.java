@@ -3,6 +3,7 @@ package grauly.comchatutil.event;
 import grauly.comchatutil.ComChatUtil;
 import grauly.comchatutil.bridge.ChatStatePayload;
 import grauly.comchatutil.config.ComChatConfig;
+import grauly.comchatutil.config.ComChatDefaultConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -25,6 +26,8 @@ public class ComChatEventListener {
     private static ClientPacketListener networkHandler;
     public static boolean needsRegexRecompile = true;
     private static String fullEscapingRegex;
+    /** Set when the config still has the defaults from before the /cc ones, shown on the next join. */
+    public static volatile boolean showUpgradeNotice = false;
 
     public static String applyAliases(String command) {
         var config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
@@ -88,6 +91,17 @@ public class ComChatEventListener {
         ComChatUtil.inStaffChat.set(false);
         ComChatUtil.serverReportsComChat = false;
         networkHandler = clientPacketListener;
+        if (showUpgradeNotice) {
+            showUpgradeNotice = false;
+            minecraft.execute(() -> {
+                if (minecraft.player != null) {
+                    minecraft.player.sendSystemMessage(Component.translatable("text.comchatutil.upgrade.legacyDefaults"));
+                }
+                var holder = AutoConfig.getConfigHolder(ComChatConfig.class);
+                holder.getConfig().configVersion = ComChatDefaultConfig.CONFIG_VERSION;
+                holder.save();
+            });
+        }
     }
 
     public static void handleChatState(ChatStatePayload payload) {

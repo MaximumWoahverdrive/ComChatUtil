@@ -9,6 +9,11 @@ public class ComChatDefaultConfig {
         throw new IllegalStateException("Utility class");
     }
 
+    /** Raise when defaults change in a way existing configs should hear about. 1: /cc defaults for survivewith.us */
+    public static final int CONFIG_VERSION = 1;
+    public static final List<String> LEGACY_TOGGLE_PHRASES = List.of("gc toggle", "groupchat toggle");
+    public static final List<String> LEGACY_INLINE_PHRASES = List.of("gc", "groupchat");
+
     @ConfigEntry.ColorPicker
     public static final int COLOR = 42752;
     @ConfigEntry.ColorPicker
