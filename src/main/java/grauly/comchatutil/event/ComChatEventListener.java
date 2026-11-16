@@ -119,7 +119,7 @@ public class ComChatEventListener {
                 Pattern.compile(phrase);
                 builder.append(phrase);
                 builder.append("|");
-            } catch (PatternSyntaxException e) {
+            } catch (PatternSyntaxException _) {
                 errorStrings.add(phrase);
             }
         });

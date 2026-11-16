@@ -32,16 +32,16 @@ public class ComChatConfig implements ConfigData {
 
     public String getTogglePhrase() {
         if (!togglePhrases.isEmpty())
-            return togglePhrases.get(0);
+            return togglePhrases.getFirst();
         ComChatUtil.LOGGER.warn("Could not load toggle phrases, using internal defaults.");
-        return ComChatDefaultConfig.togglePhrases.get(0);
+        return ComChatDefaultConfig.togglePhrases.getFirst();
     }
 
     public String getInlinePhrase() {
         if (!inlinePhrases.isEmpty())
-            return inlinePhrases.get(0);
+            return inlinePhrases.getFirst();
         ComChatUtil.LOGGER.warn("Could not load inline phrases, using internal defaults.");
-        return ComChatDefaultConfig.inlinePhrases.get(0);
+        return ComChatDefaultConfig.inlinePhrases.getFirst();
     }
 
     public boolean hasLegacyDefaults() {
