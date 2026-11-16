@@ -1,5 +1,7 @@
 # Com Chat Utils
-This is a Minecraft Mod to solve the confusion of (not) being in group chat (formerly community chat), developed specifically for The OG SMP (http://theogsmp.com/), and Back2Basics (http://back2basics.gg/). It colors the text in your chat field green (or whatever color you choose), whenever you are in group chat.
+This is a Minecraft Mod to solve the confusion of (not) being in community or staff chat, now developed primarily for survivewith.us (https://survivewith.us/), which tells the mod which chat you are in through the server integration below. It colors the text in your chat field green (or whatever color you choose) while you are in community chat, and red while you are in staff chat.
+
+It was originally made for The OG SMP (http://theogsmp.com/) and Back2Basics (http://back2basics.gg/); on servers without the integration it still works by guessing the community chat state from the commands you type.
 
 ## Server Integration
 By default the mod guesses whether you're in community chat from the commands you type. A server can instead tell it, by sending a plugin message on the channel `comchatutil:chat_state` (only clients with the mod register the channel, so vanilla clients get nothing):

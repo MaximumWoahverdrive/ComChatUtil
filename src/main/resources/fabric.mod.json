@@ -3,7 +3,7 @@
   "id": "comchatutil",
   "version": "${version}",
   "name": "Com Chat Util",
-  "description": "",
+  "description": "Colors your chat input while you are in community or staff chat. Made for survivewith.us, which reports the chat state to the mod.",
   "authors": [],
   "contact": {},
   "license": "MIT",
