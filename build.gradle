@@ -1,9 +1,17 @@
 plugins {
     id 'net.fabricmc.fabric-loom' version "${loom_version}"
     id 'maven-publish'
+    id 'com.palantir.git-version' version '5.2.0'
 }
 
-version = project.mod_version + "-" + project.minecraft_version
+def gitDetails = versionDetails()
+def lastTag = gitDetails.lastTag.replaceFirst('^v', '')
+// check if the working directory is clean using git status --porcelain
+def isClean = 'git status --porcelain'.execute().text.trim().isEmpty()
+// Format: <tag>-r<commits>.<hash>+<minecraft version>[.dirty]
+def versionSuffix = gitDetails.commitDistance > 0 ? "-r${gitDetails.commitDistance}.${gitDetails.gitHash.take(7)}" : ""
+def dirtySuffix = isClean ? '' : '.dirty'
+version = "${lastTag}${versionSuffix}+${project.minecraft_version}${dirtySuffix}"
 group = project.maven_group
 
 base {
@@ -54,6 +62,20 @@ jar {
     inputs.property "archivesName", archivesName
     from("LICENSE") {
         rename { "${it}_${archivesName.get()}" }
+    }
+}
+
+tasks.register("printReleaseMetadata") {
+    def props = [
+            java_version     : java.targetCompatibility.majorVersion,
+            minecraft_version: project.minecraft_version,
+            loader_version   : project.loader_version,
+            fabric_version   : project.fabric_version,
+            cloth_version    : project.cloth_version,
+            menu_version     : project.menu_version
+    ]
+    doLast {
+        props.each { k, v -> println("${k}=${v}") }
     }
 }
 
