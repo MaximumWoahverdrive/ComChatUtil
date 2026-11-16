@@ -7,7 +7,7 @@
   "text.autoconfig.comchatutil.option.togglePhrases": "Toggle Phrases",
   "text.autoconfig.comchatutil.option.togglePhrases.@Tooltip": "Exact text match, Case sensitive",
   "text.autoconfig.comchatutil.option.inlinePhrases": "Inline Phrases",
-  "text.autoconfig.comchatutil.option.inlinePhrases.@Tooltip": "Commands after which text goes to group chat in any case",
+  "text.autoconfig.comchatutil.option.inlinePhrases.@Tooltip": "Commands after which text goes to community chat in any case, also used to leave and rejoin community chat when escaping phrases",
   "text.autoconfig.comchatutil.option.aliasesEnabled": "Enable Command Aliases",
   "text.autoconfig.comchatutil.option.aliasesEnabled.@Tooltip": "Turn off to send the alias commands to the server unchanged",
   "text.autoconfig.comchatutil.option.aliases": "Command Aliases",

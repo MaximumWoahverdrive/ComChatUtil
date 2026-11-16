@@ -14,15 +14,15 @@ public class ComChatDefaultConfig {
     @ConfigEntry.ColorPicker
     public static final int STAFF_COLOR = 0xAA0000;
     @ConfigEntry.Gui.Tooltip
-    public static final List<String> togglePhrases = List.of("gc toggle", "groupchat toggle");
+    public static final List<String> togglePhrases = List.of("cc");
     @ConfigEntry.Gui.Tooltip
     public static final List<String> escapedPhrases = List.of("[wW][bB].?", "[wW]elcome.?");
     @ConfigEntry.Gui.Tooltip
-    public static final List<String> inlinePhrases = List.of("gc", "groupchat");
+    public static final List<String> inlinePhrases = List.of("cc");
     @ConfigEntry.Gui.Tooltip
     public static final boolean ALIASES_ENABLED = true;
     @ConfigEntry.Gui.Tooltip
-    public static final List<String> aliases = List.of("cc", "gc", "groupchat", "communitychat");
+    public static final List<String> aliases = List.of("gc", "groupchat", "communitychat");
     @ConfigEntry.Gui.Tooltip
     public static final int ESCAPEDELAYTICKS = 1;
 }
