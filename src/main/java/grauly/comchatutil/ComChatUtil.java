@@ -32,7 +32,7 @@ public class ComChatUtil implements ClientModInitializer {
         boolean hadConfig = Files.exists(FabricLoader.getInstance().getConfigDir().resolve("comchatutil.json"));
         AutoConfig.register(ComChatConfig.class, GsonConfigSerializer::new);
         var configHolder = AutoConfig.getConfigHolder(ComChatConfig.class);
-        configHolder.registerSaveListener(ComChatEventListener::onConfigChange);
+        configHolder.registerSaveListener((_, savedConfig) -> ComChatEventListener.onConfigChange(savedConfig));
         var config = configHolder.getConfig();
         if (config.configVersion < ComChatDefaultConfig.CONFIG_VERSION) {
             if (hadConfig && config.hasLegacyDefaults()) {
@@ -46,7 +46,7 @@ public class ComChatUtil implements ClientModInitializer {
         ClientSendMessageEvents.MODIFY_COMMAND.register(ComChatEventListener::applyAliases);
         ClientSendMessageEvents.ALLOW_CHAT.register(ComChatEventListener::handleComChatEscaping);
         ClientSendMessageEvents.COMMAND.register(ComChatEventListener::handleComChatToggle);
-        ClientPlayConnectionEvents.JOIN.register(ComChatEventListener::handleJoin);
+        ClientPlayConnectionEvents.JOIN.register((clientPacketListener, sender, minecraft) -> ComChatEventListener.handleJoin(clientPacketListener, minecraft));
         // registering the receiver also tells the server we listen on the channel
         PayloadTypeRegistry.clientboundPlay().register(ChatStatePayload.TYPE, ChatStatePayload.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(ChatStatePayload.TYPE,

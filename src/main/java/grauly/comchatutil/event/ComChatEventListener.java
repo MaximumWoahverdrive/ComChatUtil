@@ -5,8 +5,6 @@ import grauly.comchatutil.bridge.ChatStatePayload;
 import grauly.comchatutil.config.ComChatConfig;
 import grauly.comchatutil.config.ComChatDefaultConfig;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigHolder;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
@@ -63,7 +61,7 @@ public class ComChatEventListener {
     public static boolean handleComChatEscaping(String message) {
         var config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
         if (needsRegexRecompile) {
-            createRegexFromUserConfig();
+            createRegexFromUserConfig(config);
             needsRegexRecompile = false;
         }
         // staff chat takes the message on the server whatever community chat does
@@ -86,7 +84,7 @@ public class ComChatEventListener {
         return true;
     }
 
-    public static void handleJoin(ClientPacketListener clientPacketListener, PacketSender sender, Minecraft minecraft) {
+    public static void handleJoin(ClientPacketListener clientPacketListener, Minecraft minecraft) {
         ComChatUtil.inComChat.set(false);
         ComChatUtil.inStaffChat.set(false);
         ComChatUtil.serverReportsComChat = false;
@@ -113,10 +111,9 @@ public class ComChatEventListener {
         ComChatUtil.inStaffChat.set(payload.reports(ChatStatePayload.STAFF) && payload.isOn(ChatStatePayload.STAFF));
     }
 
-    public static void createRegexFromUserConfig() {
+    public static void createRegexFromUserConfig(ComChatConfig config) {
         StringBuilder builder = new StringBuilder();
         ArrayList<String> errorStrings = new ArrayList<>();
-        ComChatConfig config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
         config.escapedPhrases.forEach(phrase -> {
             try {
                 Pattern.compile(phrase);
@@ -147,9 +144,9 @@ public class ComChatEventListener {
         }
     }
 
-    public static InteractionResult onConfigChange(ConfigHolder<ComChatConfig> comChatConfigConfigHolder, ComChatConfig comChatConfig) {
+    public static InteractionResult onConfigChange(ComChatConfig config) {
         ComChatUtil.LOGGER.info("Config save detected, recompiling regex");
-        createRegexFromUserConfig();
+        createRegexFromUserConfig(config);
         needsRegexRecompile = false;
         return InteractionResult.PASS;
     }
