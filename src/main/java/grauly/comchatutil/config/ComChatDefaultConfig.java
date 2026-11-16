@@ -11,6 +11,8 @@ public class ComChatDefaultConfig {
 
     @ConfigEntry.ColorPicker
     public static final int COLOR = 42752;
+    @ConfigEntry.ColorPicker
+    public static final int STAFF_COLOR = 0xAA0000;
     @ConfigEntry.Gui.Tooltip
     public static final List<String> togglePhrases = List.of("gc toggle", "groupchat toggle");
     @ConfigEntry.Gui.Tooltip

@@ -1,6 +1,17 @@
 # Com Chat Utils
 This is a Minecraft Mod to solve the confusion of (not) being in group chat (formerly community chat), developed specifically for The OG SMP (http://theogsmp.com/), and Back2Basics (http://back2basics.gg/). It colors the text in your chat field green (or whatever color you choose), whenever you are in group chat.
 
+## Server Integration
+By default the mod guesses whether you're in community chat from the commands you type. A server can instead tell it, by sending a plugin message on the channel `comchatutil:chat_state` (only clients with the mod register the channel, so vanilla clients get nothing):
+
+| Byte | Meaning |
+|------|---------|
+| 0 | Version, `1` |
+| 1 | Chats the server reports: bit 0 community chat, bit 1 staff chat |
+| 2 | Chats that are on, same bits |
+
+Send it whenever the state changes, and once the client registers the channel. Chats that aren't reported are left to the mod's guessing (staff chat is then shown as off). Clients skip any further bytes, so fields can be appended without a new version.
+
 ## Reporting Bugs
 Found a bug? A crash log is mentioning this mod? Managed to desync the community chat state?
 Great! Kinda.

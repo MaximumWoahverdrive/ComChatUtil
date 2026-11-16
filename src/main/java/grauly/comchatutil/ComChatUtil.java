@@ -1,5 +1,6 @@
 package grauly.comchatutil;
 
+import grauly.comchatutil.bridge.ChatStatePayload;
 import grauly.comchatutil.config.ComChatConfig;
 import grauly.comchatutil.event.ComChatEventListener;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -7,6 +8,8 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +18,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ComChatUtil implements ClientModInitializer {
 
     public static final AtomicBoolean inComChat = new AtomicBoolean(false);
+    public static final AtomicBoolean inStaffChat = new AtomicBoolean(false);
+    /** Whether the server sends the community chat state, in which case typed commands are not counted. */
+    public static volatile boolean serverReportsComChat = false;
     public static final Logger LOGGER = LoggerFactory.getLogger("comchatutil");
 
     @Override
@@ -25,5 +31,9 @@ public class ComChatUtil implements ClientModInitializer {
         ClientSendMessageEvents.ALLOW_CHAT.register(ComChatEventListener::handleComChatEscaping);
         ClientSendMessageEvents.COMMAND.register(ComChatEventListener::handleComChatToggle);
         ClientPlayConnectionEvents.JOIN.register(ComChatEventListener::handleJoin);
+        // registering the receiver also tells the server we listen on the channel
+        PayloadTypeRegistry.clientboundPlay().register(ChatStatePayload.TYPE, ChatStatePayload.CODEC);
+        ClientPlayNetworking.registerGlobalReceiver(ChatStatePayload.TYPE,
+                (payload, context) -> ComChatEventListener.handleChatState(payload));
     }
 }

@@ -1,6 +1,7 @@
 package grauly.comchatutil.event;
 
 import grauly.comchatutil.ComChatUtil;
+import grauly.comchatutil.bridge.ChatStatePayload;
 import grauly.comchatutil.config.ComChatConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -41,6 +42,10 @@ public class ComChatEventListener {
     }
 
     public static void handleComChatToggle(String command) {
+        if (ComChatUtil.serverReportsComChat) {
+            // the server sends the new state itself, also when the command fails
+            return;
+        }
         var config = AutoConfig.getConfigHolder(ComChatConfig.class).getConfig();
         var lowerCase = command.toLowerCase();
         if (config.togglePhrases.contains(lowerCase)) {
@@ -54,7 +59,8 @@ public class ComChatEventListener {
             createRegexFromUserConfig();
             needsRegexRecompile = false;
         }
-        if (ComChatUtil.inComChat.get() && message.matches(fullEscapingRegex)) {
+        // staff chat takes the message on the server whatever community chat does
+        if (ComChatUtil.inComChat.get() && !ComChatUtil.inStaffChat.get() && message.matches(fullEscapingRegex)) {
             networkHandler.sendCommand(config.getInlinePhrase());
             try {
                 Thread.sleep(50L * config.escapeDelayTicks);
@@ -75,7 +81,18 @@ public class ComChatEventListener {
 
     public static void handleJoin(ClientPacketListener clientPacketListener, PacketSender sender, Minecraft minecraft) {
         ComChatUtil.inComChat.set(false);
+        ComChatUtil.inStaffChat.set(false);
+        ComChatUtil.serverReportsComChat = false;
         networkHandler = clientPacketListener;
+    }
+
+    public static void handleChatState(ChatStatePayload payload) {
+        if (payload.reports(ChatStatePayload.COMMUNITY)) {
+            ComChatUtil.serverReportsComChat = true;
+            ComChatUtil.inComChat.set(payload.isOn(ChatStatePayload.COMMUNITY));
+        }
+        // staff chat is never guessed, so it's simply off unless the server says otherwise
+        ComChatUtil.inStaffChat.set(payload.reports(ChatStatePayload.STAFF) && payload.isOn(ChatStatePayload.STAFF));
     }
 
     public static void createRegexFromUserConfig() {
