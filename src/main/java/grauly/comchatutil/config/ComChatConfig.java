@@ -33,7 +33,7 @@ public class ComChatConfig implements ConfigData {
     }
 
     public String getInlinePhrase() {
-        if (!togglePhrases.isEmpty())
+        if (!inlinePhrases.isEmpty())
             return inlinePhrases.get(0);
         ComChatUtil.LOGGER.warn("Could not load inline phrases, using internal defaults.");
         return ComChatDefaultConfig.inlinePhrases.get(0);
