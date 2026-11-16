@@ -5,11 +5,11 @@ import grauly.comchatutil.config.ComChatConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class ComChatEventListener {
         throw new IllegalStateException("Utility class");
     }
 
-    private static ClientPlayNetworkHandler networkHandler;
+    private static ClientPacketListener networkHandler;
     public static boolean needsRegexRecompile = true;
     private static String fullEscapingRegex;
 
@@ -55,27 +55,27 @@ public class ComChatEventListener {
             needsRegexRecompile = false;
         }
         if (ComChatUtil.inComChat.get() && message.matches(fullEscapingRegex)) {
-            networkHandler.sendChatCommand(config.getInlinePhrase());
+            networkHandler.sendCommand(config.getInlinePhrase());
             try {
                 Thread.sleep(50L * config.escapeDelayTicks);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            networkHandler.sendChatMessage(message);
+            networkHandler.sendChat(message);
             try {
                 Thread.sleep(50L * config.escapeDelayTicks);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            networkHandler.sendChatCommand(config.getInlinePhrase());
+            networkHandler.sendCommand(config.getInlinePhrase());
             return false;
         }
         return true;
     }
 
-    public static void handleJoin(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender sender, MinecraftClient minecraftClient) {
+    public static void handleJoin(ClientPacketListener clientPacketListener, PacketSender sender, Minecraft minecraft) {
         ComChatUtil.inComChat.set(false);
-        networkHandler = clientPlayNetworkHandler;
+        networkHandler = clientPacketListener;
     }
 
     public static void createRegexFromUserConfig() {
@@ -100,19 +100,22 @@ public class ComChatEventListener {
         if (errorStrings.isEmpty()) {
             return;
         }
-        MutableText errorText = MutableText.of(Text.translatable("text.comchatutil.regex.error").getContent());
+        MutableComponent errorText = Component.translatable("text.comchatutil.regex.error");
         errorStrings.forEach(erroringString -> {
-            errorText.append(Text.literal("\n"));
-            errorText.append(Text.literal(erroringString));
+            errorText.append(Component.literal("\n"));
+            errorText.append(Component.literal(erroringString));
         });
-        ComChatUtil.LOGGER.warn((errorText.toString()));
-        MinecraftClient.getInstance().player.sendMessage(errorText);
+        ComChatUtil.LOGGER.warn((errorText.getString()));
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+            player.sendSystemMessage(errorText);
+        }
     }
 
-    public static ActionResult onConfigChange(ConfigHolder<ComChatConfig> comChatConfigConfigHolder, ComChatConfig comChatConfig) {
+    public static InteractionResult onConfigChange(ConfigHolder<ComChatConfig> comChatConfigConfigHolder, ComChatConfig comChatConfig) {
         ComChatUtil.LOGGER.info("Config save detected, recompiling regex");
         createRegexFromUserConfig();
         needsRegexRecompile = false;
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }
