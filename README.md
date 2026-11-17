@@ -1,3 +1,5 @@
+> **Moved to https://git.foe.rip/SWU/ComChatUtil** – this GitHub repository is archived and no longer updated.
+
 # Com Chat Utils
 This is a Minecraft Mod to solve the confusion of (not) being in community or staff chat, now developed primarily for survivewith.us (https://survivewith.us/), which tells the mod which chat you are in through the server integration below. It colors the text in your chat field green (or whatever color you choose) while you are in community chat, and red while you are in staff chat.
 
